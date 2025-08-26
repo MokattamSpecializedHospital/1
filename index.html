@@ -20,7 +20,8 @@
             --text-dark: #212529;
             --text-muted: #6c757d;
             --whatsapp-green: #25D366;
-            --primary-glow: rgba(252, 216, 143, 0.6);
+            --primary-glow: rgba(42, 100, 101, 0.4);
+            --gold-glow: rgba(252, 216, 143, 0.7);
         }
         html { scroll-behavior: smooth; }
         body {
@@ -60,7 +61,7 @@
         #recommendation-result-container { margin-top: 15px; }
         .recommendation-card {
             background-color: var(--white);
-            border: 2px solid #ddd;
+            border: 1px solid #ddd;
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 15px;
@@ -68,8 +69,8 @@
             transition: all 0.3s ease;
         }
         .recommendation-card.primary-recommendation {
-            border-color: var(--dark-green);
-            box-shadow: 0 0 15px var(--primary-glow);
+            border: 2px solid var(--dark-green);
+            box-shadow: 0 0 20px var(--primary-glow);
         }
         .recommendation-header {
             display: flex;
@@ -80,6 +81,7 @@
         .recommendation-header i {
             font-size: 24px;
             color: var(--dark-green);
+            transition: all 0.3s;
         }
         .recommendation-header h3 {
             margin: 0;
@@ -91,7 +93,7 @@
         }
         @keyframes glow {
             from { color: var(--dark-green); text-shadow: none; }
-            to { color: var(--gold); text-shadow: 0 0 10px var(--primary-glow); }
+            to { color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); transform: scale(1.1); }
         }
         .recommendation-badge {
             background-color: var(--dark-green);
@@ -122,7 +124,7 @@
         .section-title .title-text h2 { font-size: 20px; font-weight: 700; margin:0; }
         .section-title .title-text h3 { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400; opacity: 0.9; margin:0; }
         .doctor-card { display: block; margin-bottom: 15px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #eee; transition: all 0.3s; }
-        .doctor-card.highlight { box-shadow: 0 0 15px 5px var(--primary-glow); transform: scale(1.02); }
+        .doctor-card.highlight { box-shadow: 0 0 15px 5px var(--gold-glow); transform: scale(1.02); border-color: var(--gold); }
         .doctor-card .doctor-name { background-color: #f8f9fa; text-align: center; padding: 12px; font-size: 16px; font-weight: 600; }
         .doctor-card .appointment { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; font-size: 14px; border-bottom: 1px solid #eee; }
         .doctor-card .appointment:last-child { border-bottom: none; }
@@ -190,7 +192,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
-    // بيانات العيادات والأطباء الكاملة (محدثة ومصححة)
+    // بيانات العيادات والأطباء الكاملة (محدثة ومصححة بالكامل)
     const clinicsData = [
         { 
             id: "الباطنة-العامة", name: "الباطنة العامة", en_name: "General Medicine", icon: "fa-stethoscope",
@@ -493,6 +495,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function performSearch() {
         const searchTerm = searchInput.value.toLowerCase().trim();
         searchResultsContainer.innerHTML = '';
+        document.querySelectorAll('.doctor-card.highlight').forEach(c => c.classList.remove('highlight'));
         if (!searchTerm) {
             searchResultsContainer.style.display = 'none';
             return;
@@ -542,7 +545,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.doctor-card.highlight').forEach(c => c.classList.remove('highlight'));
             card.scrollIntoView({ behavior: 'smooth', block: 'center' });
             card.classList.add('highlight');
-            setTimeout(() => card.classList.remove('highlight'), 2500);
+            setTimeout(() => card.classList.remove('highlight'), 3000);
         }
     }
 
@@ -550,15 +553,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const symptomsInput = document.getElementById('symptoms-input');
     const recommendationResultContainer = document.getElementById('recommendation-result-container');
     const loader = document.getElementById('loader');
-    
-    const AI_FUNCTION_URL = "/api/recommend"; 
 
     getRecommendationBtn.addEventListener('click', async () => {
-        const symptomsText = symptomsInput.value.trim();
+        const symptomsText = symptomsInput.value.trim().toLowerCase();
         if (!symptomsText) {
-            // Using a custom modal/alert in the future would be better than window.alert
-            // For now, we'll keep it simple.
-            console.log('Please describe your symptoms.');
+            // In a real app, you might show a custom modal instead of a console log.
+            console.warn('Please describe your symptoms before requesting a recommendation.');
             return;
         }
 
@@ -567,29 +567,57 @@ document.addEventListener('DOMContentLoaded', function() {
         getRecommendationBtn.disabled = true;
 
         try {
-            // This is a placeholder for the actual API call.
-            // In a real scenario, you would fetch from your backend.
-            // For this example, we'll simulate a delay and a response.
+            // Simulate an API call to an AI service
             await new Promise(resolve => setTimeout(resolve, 1500));
             
-            // Mock response based on keywords. This is a very simple simulation.
+            // --- Improved Mock AI Logic ---
             let recommendations = [];
-            if (symptomsText.includes("بول") || symptomsText.includes("كلى")) {
-                recommendations.push({id: 'المسالك-البولية', reason: 'بناءً على ذكر أعراض تتعلق بالبول، قد يكون من الأفضل استشارة أخصائي المسالك البولية.'});
-            } else if (symptomsText.includes("قلب") || symptomsText.includes("صدر")) {
-                 recommendations.push({id: 'القلب', reason: 'الأعراض الموصوفة قد تكون مرتبطة بالقلب، نوصي بزيارة عيادة القلب.'});
-                 recommendations.push({id: 'الصدر', reason: 'كاحتمال آخر، قد تكون الأعراض متعلقة بالجهاز التنفسي، لذا عيادة الصدر قد تكون مناسبة أيضًا.'});
+            const text = symptomsText;
+
+            if (text.includes("قلب") || text.includes("صدري") || text.includes("كتمة نفس") || text.includes("نهجان")) {
+                recommendations.push({
+                    id: 'القلب', 
+                    reason: 'بناءً على وصفك لأعراض مثل ألم الصدر أو ضيق التنفس، فإن الترشيح الأول هو عيادة القلب، حيث أن هذه الأعراض قد تكون مؤشراً على حالة قلبية تتطلب فحصاً دقيقاً.'
+                });
+                recommendations.push({
+                    id: 'الصدر', 
+                    reason: 'كاحتمال بديل، قد تكون هذه الأعراض مرتبطة بالجهاز التنفسي. عيادة الصدر متخصصة في فحص الرئتين والقصبة الهوائية، وهو ما قد يكون مفيداً لاستبعاد أي أسباب أخرى.'
+                });
+            } else if (text.includes("بول") || text.includes("كلى") || text.includes("مسالك") || text.includes("حصوة")) {
+                recommendations.push({
+                    id: 'المسالك-البولية',
+                    reason: 'ذكر أعراض مثل "حرقان البول" أو "ألم الجنب" يشير بقوة إلى احتمالية وجود مشكلة في المسالك البولية. هذه العيادة هي الأكثر تخصصاً لتشخيص وعلاج مثل هذه الحالات.'
+                });
+                 recommendations.push({
+                    id: 'الباطنة-العامة',
+                    reason: 'في حال كانت الأعراض غير واضحة تماماً، يمكن لطبيب الباطنة العامة إجراء فحص شامل لتحديد السبب المبدئي وتوجيهك بشكل أكثر دقة للتخصص المطلوب.'
+                });
+            } else if (text.includes("عظام") || text.includes("مفصل") || text.includes("ركبتي") || text.includes("ظهري")) {
+                 recommendations.push({
+                    id: 'العظام',
+                    reason: 'الأعراض التي تصف ألماً في المفاصل، العظام، أو الظهر تقع مباشرةً ضمن اختصاص عيادة العظام. الطبيب المختص هو الأقدر على تقييم الحالة بدقة.'
+                });
+                 recommendations.push({
+                    id: 'مناعة-وروماتيزم',
+                    reason: 'أحياناً، تكون آلام المفاصل ناتجة عن أمراض روماتيزمية. إذا كان الألم مزمناً أو مصحوباً بتورم، قد تكون هذه العيادة هي الخيار الأنسب للتشخيص.'
+                });
+            } else if (text.includes("طفل") || text.includes("ابني") || text.includes("بنتي")) {
+                 recommendations.push({
+                    id: 'الأطفال',
+                    reason: 'طالما أن الشكوى تخص طفلاً، فإن عيادة الأطفال هي نقطة البداية الصحيحة دائماً، حيث أن أطباء الأطفال مدربون على التعامل مع كافة الحالات الصحية الخاصة بهم.'
+                });
             }
+
 
             if (recommendations.length > 0) {
                 displayRecommendations(recommendations);
             } else {
-                displayFallback();
+                displayFallback(); // Fallback if no specific keywords are matched
             }
 
         } catch (error) {
-            console.error("Error:", error);
-            displayFallback('عفواً، حدث خطأ تقني. يرجى المحاولة مرة أخرى.');
+            console.error("Error fetching recommendation:", error);
+            displayFallback('عفواً، حدث خطأ تقني. يرجى المحاولة مرة أخرى أو التواصل معنا مباشرة.');
         } finally {
             loader.style.display = 'none';
             getRecommendationBtn.disabled = false;
@@ -610,7 +638,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="recommendation-header">
                     <i class="fa-solid ${clinicInfo.icon}"></i>
                     <h3>${clinicInfo.name}</h3>
-                    ${isPrimary ? '<span class="recommendation-badge">الأكثر ترشيحاً</span>' : ''}
+                    ${isPrimary ? '<span class="recommendation-badge">الترشيح الأنسب</span>' : '<span class="recommendation-badge" style="background-color: #6c757d;">ترشيح بديل</span>'}
                 </div>
                 <p class="recommendation-reason">${rec.reason}</p>
             `;
@@ -631,24 +659,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayFallback(message = null) {
-        const fallbackMessage = message || 'لم نتمكن من تحديد تخصص دقيق. نقترح عليك التوجه لعيادة <strong>الباطنة العامة</strong> للتشخيص المبدئي.';
+        const fallbackMessage = message || 'لم نتمكن من تحديد تخصص دقيق بناءً على الوصف. في هذه الحالة، نقترح عليك التوجه لعيادة <strong>الباطنة العامة</strong>، حيث يمكن للطبيب إجراء تشخيص مبدئي شامل وتوجيهك للتخصص الصحيح إذا لزم الأمر.';
         recommendationResultContainer.innerHTML = `
-            <div class="recommendation-card">
-                <p>${fallbackMessage}</p>
+            <div class="recommendation-card primary-recommendation">
+                 <div class="recommendation-header">
+                    <i class="fa-solid fa-stethoscope"></i>
+                    <h3>الباطنة العامة</h3>
+                    <span class="recommendation-badge">الترشيح المبدئي</span>
+                </div>
+                <p class="recommendation-reason">${fallbackMessage}</p>
             </div>
         `;
-        if (!message) {
-            const button = document.createElement('button');
-            button.className = 'go-to-btn';
-            button.innerHTML = `اذهب إلى عيادة الباطنة العامة <i class="fa-solid fa-arrow-down"></i>`;
-            button.onclick = () => {
-                const clinicSection = document.getElementById('clinic-الباطنة-العامة');
-                if (clinicSection) {
-                    clinicSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            };
-            recommendationResultContainer.querySelector('.recommendation-card').appendChild(button);
-        }
+        const button = document.createElement('button');
+        button.className = 'go-to-btn';
+        button.innerHTML = `اذهب إلى عيادة الباطنة العامة <i class="fa-solid fa-arrow-down"></i>`;
+        button.onclick = () => {
+            const clinicSection = document.getElementById('clinic-الباطنة-العامة');
+            if (clinicSection) {
+                clinicSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        };
+        recommendationResultContainer.querySelector('.recommendation-card').appendChild(button);
     }
 });
 </script>
