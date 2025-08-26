@@ -9,18 +9,18 @@ jobs:
     steps:
       - name: Send request to Gemini API
         run: |
-          curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent" \
-            -H 'Content-Type: application/json' \
-            -H 'X-goog-api-key: ${{ secrets.GEMINI_API_KEY }}' \
-            -X POST \
-            -d '{
-              "contents": [
-                {
-                  "parts": [
-                    {
-                      "text": "Explain how AI works in a few words"
-                    }
-                  ]
-                }
-              ]
-            }'
+          curl -i -X POST \
+          -H "Content-Type: application/json" \
+          -H "X-goog-api-key: ${{ secrets.GEMINI_API_KEY }}" \
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent" -d \
+          '{
+            "contents": [
+              {
+                "parts": [
+                  {
+                    "text": "Explain how AI works in a few words"
+                  }
+                ]
+              }
+            ]
+          }'
