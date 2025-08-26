@@ -1,28 +1,15 @@
-name: Call Gemini API
-
-on:
-  workflow_dispatch:
-
-jobs:
-  call-api:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send request to Gemini API
-        run: |
-          curl --fail -X POST \
-          -H "Content-Type: application/json" \
-          -H "X-goog-api-key: ${{ secrets.GEMINI_API_KEY }}" \
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent" \
-          --data @- <<'EOF'
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent" \
+  -H 'Content-Type: application/json' \
+  -H 'X-goog-api-key: GEMINI_API_KEY' \
+  -X POST \
+  -d '{
+    "contents": [
+      {
+        "parts": [
           {
-            "contents": [
-              {
-                "parts": [
-                  {
-                    "text": "Explain how AI works in a few words"
-                  }
-                ]
-              }
-            ]
+            "text": "Explain how AI works in a few words"
           }
-          EOF
+        ]
+      }
+    ]
+  }'
