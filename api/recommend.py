@@ -3,7 +3,6 @@ import google.generativeai as genai
 from http.server import BaseHTTPRequestHandler
 import json
 
-# قائمة العيادات
 CLINICS_LIST = """
 - "الباطنة-العامة": "الباطنة العامة"
 - "غدد-صماء-وسكر": "غدد صماء وسكر"
@@ -20,25 +19,37 @@ CLINICS_LIST = """
 - "الرمد": "الرمد"
 - "القلب": "القلب"
 - "الأسنان": "الأسنان"
+- "أمراض-الدم": "أمراض الدم"
 """
 
 class handler(BaseHTTPRequestHandler):
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
+        # --- CORS Handling for Vercel ---
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+
+        if self.command == 'OPTIONS':
+            return
+
+        content_length = int(self.headers.get('Content-Length', 0))
         post_data = self.rfile.read(content_length)
+        
         try:
             data = json.loads(post_data)
             symptoms = data.get('symptoms')
 
             if not symptoms:
-                self.send_response(400)
-                self.send_header('Content-type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps({"error": "Missing symptoms"}).encode())
+                self.wfile.write(json.dumps({"error": "Missing symptoms"}).encode('utf-8'))
                 return
-
+            
             # --- Gemini AI Logic ---
             api_key = os.environ.get("GEMINI_API_KEY")
+            if not api_key:
+                raise ValueError("GEMINI_API_KEY is not set in Vercel environment variables.")
+
             genai.configure(api_key=api_key)
             model = genai.GenerativeModel('gemini-1.5-flash')
 
@@ -53,14 +64,17 @@ class handler(BaseHTTPRequestHandler):
             response = model.generate_content(prompt)
             cleaned_response = response.text.strip().replace("```json", "").replace("```", "")
             
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            self.wfile.write(cleaned_response.encode())
+            self.wfile.write(cleaned_response.encode('utf-8'))
 
         except Exception as e:
-            self.send_response(500)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps({"error": str(e)}).encode())
+            # Send a more descriptive error back for debugging
+            error_payload = json.dumps({"error": f"An internal error occurred: {str(e)}"}).encode('utf-8')
+            self.wfile.write(error_payload)
         return
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
