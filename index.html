@@ -12,7 +12,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-    /* -- الألوان الأساسية -- */
     :root {
         --dark-green: #2a6465;
         --light-green: #d0ffc2;
@@ -43,12 +42,10 @@
         box-sizing: border-box;
         overflow: hidden;
     }
-    /* -- الأجزاء العلوية: اللوجو والمعلومات -- */
     .logo-container { text-align: center; margin: -25px -25px 25px -25px; }
     .logo-image { width: 100%; height: auto; }
     .info-text { text-align: center; line-height: 2; font-size: 16px; margin-bottom: 20px; padding: 20px; background-color: #f8f9fa; border-radius: 10px; }
     
-    /* -- صناديق البحث والتوصية -- */
     .feature-box { text-align: center; margin-bottom: 25px; padding: 20px; background-color: #e6f3f3; border: 1px solid var(--dark-green); border-radius: 10px; }
     .feature-box h2 { font-size: 18px; color: var(--dark-green); margin-top: 0; }
     .feature-box p { font-size: 14px; color: var(--text-muted); }
@@ -60,7 +57,6 @@
     .feature-box button.go-to-btn, #doctor-search-btn { background-color: var(--gold); color: var(--dark-green); }
     .feature-box button:hover:not(:disabled) { opacity: 0.9; transform: translateY(-2px); }
     
-    /* -- حاوية نتائج التوصية الذكية (الجزء الجديد والمهم) -- */
     #recommendation-result-container { margin-top: 15px; }
     .recommendation-card {
         background-color: var(--white);
@@ -114,10 +110,11 @@
         text-align: justify;
     }
     
-    /* -- باقي الأنماط -- */
     #search-results-container { margin-top: 15px; text-align: right; }
     #search-results-container .result-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
     #search-results-container .result-item:last-child { border-bottom: none; }
+    .result-info strong { font-size: 1em; color: var(--text-dark); }
+    .result-info .clinic-name { font-size: 0.8em; color: var(--text-muted); }
     .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--dark-green); border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; margin: 10px auto; display: none; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .section-title { background-color: var(--dark-green); color: var(--white); padding: 12px 20px; border-radius: 10px; margin-top: 35px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
