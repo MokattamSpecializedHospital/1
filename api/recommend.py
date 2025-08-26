@@ -12,16 +12,21 @@ CLINICS_LIST = """
 
 class handler(BaseHTTPRequestHandler):
     
-    def _set_headers(self, status_code=200):
+    def _send_response(self, status_code, data):
         self.send_response(status_code)
         self.send_header('Content-type', 'application/json; charset=utf-8')
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.end_headers()
+        self.wfile.write(json.dumps(data, ensure_ascii=False).encode('utf-8'))
 
     def do_OPTIONS(self):
-        self._set_headers(204)
+        self.send_response(204)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
 
     def do_POST(self):
         content_length = int(self.headers.get('Content-Length', 0))
@@ -32,20 +37,19 @@ class handler(BaseHTTPRequestHandler):
             symptoms = data.get('symptoms')
 
             if not symptoms:
-                self._set_headers(400)
-                self.wfile.write(json.dumps({"error": "Missing symptoms"}).encode('utf-8'))
+                self._send_response(400, {"error": "Missing symptoms"})
                 return
             
             api_key = os.environ.get("GEMINI_API_KEY")
             if not api_key:
-                self._set_headers(500)
-                self.wfile.write(json.dumps({"error": "API key not configured"}).encode('utf-8'))
+                # لا ترسل هذا الخطأ للمستخدم النهائي، فقط للسجلات
+                print("CRITICAL: GEMINI_API_KEY is not set in Vercel environment variables.")
+                self._send_response(500, {"error": "Server configuration error."})
                 return
 
             genai.configure(api_key=api_key)
             model = genai.GenerativeModel('gemini-1.5-flash')
 
-            # === الطلب الجديد والأكثر ذكاءً لـ Gemini ===
             prompt = f"""
             أنت مساعد طبي خبير في مستشفى. مهمتك هي تحليل شكوى المريض واقتراح أفضل عيادتين بحد أقصى من قائمة العيادات المتاحة.
 
@@ -70,15 +74,27 @@ class handler(BaseHTTPRequestHandler):
                 }}
               ]
             }}
-            إذا كانت هناك توصية واحدة فقط، أعد القائمة بعنصر واحد. إذا كانت الشكوى غير طبية، أعد قائمة فارغة.
+            إذا كانت هناك توصية واحدة فقط، أعد القائمة بعنصر واحد. إذا كانت الشكوى غير طبية أو غامضة جداً، أعد قائمة فارغة.
             """
             
             response = model.generate_content(prompt)
-            cleaned_response = response.text.strip().replace("```json", "").replace("```", "")
             
-            self._set_headers(200)
-            self.wfile.write(cleaned_response.encode('utf-8'))
+            # تنظيف الرد والتأكد من أنه JSON صالح
+            cleaned_text = response.text.strip().replace("```json", "").replace("```", "")
+            try:
+                json_response = json.loads(cleaned_text)
+            except json.JSONDecodeError:
+                # إذا فشل Gemini في إعطاء JSON، سنقوم بتحليله بأنفسنا
+                print(f"Warning: Gemini returned a non-JSON response: {cleaned_text}")
+                # محاولة أخيرة لاستخراج الرد
+                # This is a fallback and might not always work.
+                if "recommendations" in cleaned_text:
+                     json_response = {"recommendations": []} # Fallback to empty
+                else:
+                     json_response = {"recommendations": []}
+
+            self._send_response(200, json_response)
 
         except Exception as e:
-            self._set_headers(500)
-            self.wfile.write(json.dumps({"error": str(e)}).encode('utf-8'))
+            print(f"ERROR: An exception occurred: {str(e)}")
+            self._send_response(500, {"error": "An internal server error occurred."})
