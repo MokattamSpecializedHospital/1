@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "api/recommend.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/recommend.py"
+    }
+  ]
+}
