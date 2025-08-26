@@ -9,11 +9,12 @@ jobs:
     steps:
       - name: Send request to Gemini API
         run: |
-          curl -i -X POST \
+          curl --fail -X POST \
           -H "Content-Type: application/json" \
           -H "X-goog-api-key: ${{ secrets.GEMINI_API_KEY }}" \
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent" -d \
-          '{
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent" \
+          --data @- <<'EOF'
+          {
             "contents": [
               {
                 "parts": [
@@ -23,4 +24,5 @@ jobs:
                 ]
               }
             ]
-          }'
+          }
+          EOF
