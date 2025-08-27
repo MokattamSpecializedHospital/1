@@ -20,7 +20,6 @@
         --text-muted: #6c757d;
         --whatsapp-green: #25D366;
         --primary-glow: rgba(42, 100, 101, 0.4);
-        --gold-glow: rgba(252, 216, 143, 0.7);
     }
     html { scroll-behavior: smooth; }
     body {
@@ -90,51 +89,20 @@
     .recommendation-card { background-color: var(--white); border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 15px; text-align: right; transition: all 0.3s ease; }
     .recommendation-card.primary-recommendation { border: 2px solid var(--dark-green); box-shadow: 0 0 20px var(--primary-glow); }
     .recommendation-header { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
-    .recommendation-header .icon {
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative; 
-        overflow: hidden; 
-    }
-    .recommendation-card.primary-recommendation .recommendation-header .icon {
-        animation: pulse 1.5s infinite ease-in-out;
-    }
-    .recommendation-card.primary-recommendation .recommendation-header .icon::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -60%;
-        width: 20%;
-        height: 200%;
-        background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
-        transform: rotate(35deg);
-        animation: sheen 3s infinite;
-    }
+    .recommendation-header .icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .recommendation-card.primary-recommendation .recommendation-header .icon { animation: pulse 1.5s infinite ease-in-out; }
+    .recommendation-card.primary-recommendation .recommendation-header .icon::after { content: ''; position: absolute; top: -50%; left: -60%; width: 20%; height: 200%; background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%); transform: rotate(35deg); animation: sheen 3s infinite; }
 
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-    }
-    @keyframes sheen {
-        0% { left: -60%; }
-        100% { left: 140%; }
-    }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    @keyframes sheen { 0% { left: -60%; } 100% { left: 140%; } }
 
     .recommendation-header .icon .svg-icon {
-        width: 100%;
-        height: 100%;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
+        width: 100%; height: 100%;
         background-color: var(--dark-green);
+        -webkit-mask-size: contain; mask-size: contain;
+        -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
     }
-    .recommendation-header .icon .fa-solid {
-        font-size: 28px;
-        color: var(--dark-green);
-    }
+    .recommendation-header .icon .fa-solid { font-size: 28px; color: var(--dark-green); }
     .recommendation-header h3 { margin: 0; font-size: 20px; color: var(--text-dark); }
     .recommendation-badge { background-color: var(--dark-green); color: white; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 12px; margin-right: auto; }
     .recommendation-reason { font-size: 15px; line-height: 1.8; color: var(--text-muted); margin-bottom: 15px; text-align: justify; }
@@ -145,22 +113,13 @@
     .result-info strong { font-size: 1em; color: var(--text-dark); }
     .result-info .clinic-name { font-size: 0.8em; color: var(--text-muted); }
     .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--dark-green); border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; margin: 10px auto; display: none; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .section-title { background-color: var(--dark-green); color: var(--white); padding: 12px 20px; border-radius: 10px; margin-top: 35px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
-    .section-title .icon {
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+    .section-title .icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
     .section-title .icon .svg-icon {
-        width: 100%;
-        height: 100%;
+        width: 100%; height: 100%;
         background-color: var(--white);
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
+        -webkit-mask-size: contain; mask-size: contain;
+        -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
     }
     .section-title .icon .fa-solid { font-size: 28px; }
     .section-title .title-text { flex-grow: 1; }
@@ -292,7 +251,8 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: "جراحة-التجميل", doctors: [ { name: "د. اسامه الشحات (استشاري)", en_name: "Dr. Osama Elshahat (Consultant)", schedule: { "الإثنين": "04:30 PM" } } ] },
         { id: "علاج-البواسير-والشرخ-بالليزر", doctors: [ { name: "د. وائل صابر (استشاري)", en_name: "Dr. Wael Saber (Consultant)", schedule: { "الإثنين": "08:30 PM", "الجمعة": "02:30 PM" } } ] },
         { id: "الأسنان", doctors: [ { name: "د. محمود اهاب (اخصائي)", en_name: "Dr. Mahmoud Ehab (Specialist)", schedule: { "السبت": "04:00 PM", "الثلاثاء": "06:00 PM", "الأربعاء": "07:00 PM" } }, { name: "د. زياد اشرف (اخصائي)", en_name: "Dr. Ziad Ashraf (Specialist)", schedule: { "السبت": "07:00 PM", "الإثنين": "02:00 PM", "الجمعة": "02:00 PM" } }, { name: "د. نرمين حاتم (اخصائي)", en_name: "Dr. Nermin Hatem (Specialist)", schedule: { "الإثنين": "03:00 PM", "الثلاثاء": "03:00 PM" } }, { name: "د. ريم السيد (اخصائي)", en_name: "Dr. Reem Elsayed (Specialist)", schedule: { "الأحد": "06:00 PM", "الخميس": "06:30 PM" } }, { name: "د. سلمي هاني (استشاري)", en_name: "Dr. Salma Hany (Consultant)", schedule: { "السبت": "12:00 PM" } }, { name: "د. علي محسن (اخصائي)", en_name: "Dr. Ali Mohsen (Specialist)", schedule: { "الإثنين": "06:00 PM", "الأربعاء": "04:00 PM", "الخميس": "04:00 PM" } } ] },
-        { id: "السمعيات", doctors: [ { name: "د. شيماء قابيل (استشاري)", en_name: "Dr. Shaimaa Qabil (Consultant)", schedule: { "الأربعاء": "06:00 PM" } }, { name: "د. هاني عبدالعزيز (استشاري)", en_name: "Dr. Hany Abdelaziz (Consultant)", schedule: { "الأحد": "12:00 PM" } } ] }
+        { id: "السمعيات", doctors: [ { name: "د. شيماء قابيل (استشاري)", en_name: "Dr. Shaimaa Qabil (Consultant)", schedule: { "الأربعاء": "06:00 PM" } }, { name: "د. هاني عبدالعزيز (استشاري)", en_name: "Dr. Hany Abdelaziz (Consultant)", schedule: { "الأحد": "12:00 PM" } } ] },
+        { id: "أمراض-الدم", doctors: [ { name: "د. عمرو صدقي (استشاري)", en_name: "Dr. Amr Sedky (Consultant)", schedule: { "الإثنين": "02:00 PM", "الخميس": "04:00 PM" } } ] }
     ];
 
     const clinicsDisplayData = [
