@@ -91,58 +91,77 @@
     .recommendation-card { background-color: var(--white); border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 15px; text-align: right; transition: all 0.3s ease; }
     .recommendation-card.primary-recommendation { border: 2px solid var(--dark-green); box-shadow: 0 0 20px var(--primary-glow); }
     .recommendation-header { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
-    .recommendation-header .icon {
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative; /* For sheen effect */
-        overflow: hidden; /* For sheen effect */
-    }
-    .recommendation-header .icon .svg-icon,
-    .recommendation-header .icon .fa-solid {
-        animation: none; /* Reset animation for all */
-    }
-    .recommendation-card.primary-recommendation .recommendation-header .icon .svg-icon,
-    .recommendation-card.primary-recommendation .recommendation-header .icon .fa-solid {
-        animation: pulse 1.5s infinite ease-in-out;
-    }
-    .recommendation-card.primary-recommendation .recommendation-header .icon::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -60%;
-        width: 20%;
-        height: 200%;
-        background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
-        transform: rotate(35deg);
-        animation: sheen 3s infinite;
-    }
-
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-    }
-    @keyframes sheen {
-        0% { left: -60%; }
-        100% { left: 140%; }
-    }
-
-    .recommendation-header .icon .svg-icon {
-        width: 100%;
-        height: 100%;
-        -webkit-mask-size: contain;
-        mask-size: contain;
-        -webkit-mask-repeat: no-repeat;
-        mask-repeat: no-repeat;
-        background-color: var(--dark-green); /* Default to green */
+    .recommendation-header .icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; transition: transform 0.3s ease; }
+    
+    /* --- MODIFICATION START: Icon Color & Animation --- */
+    
+    /* 1. Reset default icon colors in recommendation cards to allow for specific overrides */
+    .recommendation-header .icon img {
+        width: 100%; height: 100%;
+        filter: none; /* Remove the generic green filter */
     }
     .recommendation-header .icon .fa-solid {
         font-size: 28px;
-        color: var(--dark-green);
+        color: var(--dark-green); /* Default color, will be overridden by specific classes */
     }
-    .recommendation-header h3 { margin: 0; font-size: 20px; color: var(--text-dark); }
+
+    /* 2. New animation for pulsing and shining effect */
+    @keyframes pulseAndShine {
+        0%, 100% {
+            transform: scale(1);
+            filter: brightness(1.1);
+        }
+        50% {
+            transform: scale(1.15);
+            filter: brightness(1.4) drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+        }
+    }
+
+    /* 3. Apply new animation to the primary recommendation's icon */
+    .recommendation-card.primary-recommendation .recommendation-header .icon {
+        animation: pulseAndShine 1.5s infinite ease-in-out;
+    }
+
+    /* 4. Make secondary (non-primary) recommendations less prominent */
+    .recommendation-card:not(.primary-recommendation) {
+        opacity: 0.85;
+        border-color: #e0e0e0;
+    }
+    .recommendation-card:not(.primary-recommendation) .recommendation-header .icon {
+        transform: scale(0.9); /* Make icon slightly smaller */
+    }
+
+    /* 5. International Medical Specialty Colors */
+    .icon-الرمد .fa-solid, .icon-الرمد img { color: #008080; filter: invert(34%) sepia(20%) saturate(2201%) hue-rotate(135deg) brightness(95%) contrast(101%); }
+    .icon-الأوعية-الدموية .fa-solid, .icon-الأوعية-الدموية img { color: #A61C1C; filter: invert(16%) sepia(61%) saturate(2899%) hue-rotate(341deg) brightness(91%) contrast(93%); }
+    .icon-غدد-صماء-وسكر .fa-solid, .icon-غدد-صماء-وسكر img { color: #6E7F80; filter: invert(52%) sepia(8%) saturate(795%) hue-rotate(137deg) brightness(94%) contrast(88%); }
+    .icon-مناعة-وروماتيزم .fa-solid, .icon-مناعة-وروماتيزم img { color: #8A2BE2; filter: invert(26%) sepia(81%) saturate(2563%) hue-rotate(259deg) brightness(90%) contrast(94%); }
+    .icon-مناعة-وحساسية-الأطفال .fa-solid, .icon-مناعة-وحساسية-الأطفال img { color: #20B2AA; filter: invert(54%) sepia(51%) saturate(541%) hue-rotate(129deg) brightness(95%) contrast(88%); }
+    .icon-أنف-وأذن-وحنجرة .fa-solid, .icon-أنف-وأذن-وحنجرة img { color: #556B2F; filter: invert(39%) sepia(17%) saturate(1029%) hue-rotate(42deg) brightness(92%) contrast(88%); }
+    .icon-الصدر .fa-solid, .icon-الصدر img { color: #87CEEB; filter: invert(81%) sepia(21%) saturate(467%) hue-rotate(159deg) brightness(97%) contrast(92%); }
+    .icon-جهاز-هضمي-ومناظير .fa-solid, .icon-جهاز-هضمي-ومناظير img { color: #6495ED; filter: invert(62%) sepia(35%) saturate(1243%) hue-rotate(193deg) brightness(97%) contrast(88%); }
+    .icon-باطنة-وقلب .fa-solid, .icon-باطنة-وقلب img { color: #FF0000; filter: invert(13%) sepia(99%) saturate(7460%) hue-rotate(359deg) brightness(111%) contrast(115%); }
+    .icon-الجراحة-العامة .fa-solid, .icon-الجراحة-العامة img { color: #5F9EA0; filter: invert(61%) sepia(28%) saturate(403%) hue-rotate(134deg) brightness(95%) contrast(88%); }
+    .icon-نساء-وتوليد .fa-solid, .icon-نساء-وتوليد img { color: #DB7093; filter: invert(56%) sepia(21%) saturate(913%) hue-rotate(300deg) brightness(89%) contrast(84%); }
+    .icon-العظام .fa-solid, .icon-العظام img { color: #4169E1; filter: invert(41%) sepia(61%) saturate(1595%) hue-rotate(207deg) brightness(92%) contrast(91%); }
+    .icon-الجلدية .fa-solid, .icon-الجلدية img { color: #FA8072; filter: invert(65%) sepia(14%) saturate(996%) hue-rotate(318deg) brightness(98%) contrast(96%); }
+    .icon-المخ-والأعصاب-باطنة .fa-solid, .icon-المخ-والأعصاب-باطنة img { color: #A9A9A9; filter: invert(73%) sepia(0%) saturate(1%) hue-rotate(148deg) brightness(94%) contrast(92%); }
+    .icon-المسالك-البولية .fa-solid, .icon-المسالك-البولية img { color: #ADD8E6; filter: invert(88%) sepia(13%) saturate(452%) hue-rotate(158deg) brightness(95%) contrast(90%); }
+    .icon-الأطفال .fa-solid, .icon-الأطفال img { color: #FFD700; filter: invert(84%) sepia(54%) saturate(1008%) hue-rotate(347deg) brightness(102%) contrast(101%); }
+    .icon-أمراض-الدم .fa-solid, .icon-أمراض-الدم img { color: #B22222; filter: invert(18%) sepia(50%) saturate(3029%) hue-rotate(341deg) brightness(89%) contrast(96%); }
+    .icon-الباطنة-العامة .fa-solid, .icon-الباطنة-العامة img { color: #4682B4; filter: invert(49%) sepia(22%) saturate(836%) hue-rotate(167deg) brightness(95%) contrast(88%); }
+    .icon-جراحة-المخ-والأعصاب .fa-solid, .icon-جراحة-المخ-والأعصاب img { color: #696969; filter: invert(41%) sepia(0%) saturate(1%) hue-rotate(200deg) brightness(95%) contrast(89%); }
+    .icon-أمراض-الذكورة .fa-solid, .icon-أمراض-الذكورة img { color: #1E90FF; filter: invert(49%) sepia(79%) saturate(1919%) hue-rotate(193deg) brightness(101%) contrast(101%); }
+    .icon-تغذية-الأطفال .fa-solid, .icon-تغذية-الأطفال img { color: #32CD32; filter: invert(66%) sepia(74%) saturate(468%) hue-rotate(71deg) brightness(93%) contrast(87%); }
+    .icon-القلب .fa-solid, .icon-القلب img { color: #DC143C; filter: invert(20%) sepia(68%) saturate(3195%) hue-rotate(330deg) brightness(90%) contrast(93%); }
+    .icon-رسم-قلب-بالمجهود-وإيكو .fa-solid, .icon-رسم-قلب-بالمجهود-وإيكو img { color: #E53935; filter: invert(32%) sepia(34%) saturate(2222%) hue-rotate(337deg) brightness(92%) contrast(92%); }
+    .icon-جراحة-التجميل .fa-solid, .icon-جراحة-التجميل img { color: #FFC107; filter: invert(79%) sepia(52%) saturate(1210%) hue-rotate(345deg) brightness(101%) contrast(101%); }
+    .icon-علاج-البواسير-والشرخ-بالليزر .fa-solid, .icon-علاج-البواسير-والشرخ-بالليزر img { color: #6495ED; filter: invert(62%) sepia(35%) saturate(1243%) hue-rotate(193deg) brightness(97%) contrast(88%); }
+    .icon-الأسنان .fa-solid, .icon-الأسنان img { color: #AFEEEE; filter: invert(96%) sepia(13%) saturate(543%) hue-rotate(120deg) brightness(105%) contrast(92%); }
+    .icon-السمعيات .fa-solid, .icon-السمعيات img { color: #4B0082; filter: invert(9%) sepia(70%) saturate(6050%) hue-rotate(275deg) brightness(91%) contrast(100%); }
+
+    /* --- MODIFICATION END --- */
+
     .recommendation-badge { background-color: var(--dark-green); color: white; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 12px; margin-right: auto; }
     .recommendation-reason { font-size: 15px; line-height: 1.8; color: var(--text-muted); margin-bottom: 15px; text-align: justify; }
     
@@ -155,16 +174,14 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .section-title { background-color: var(--dark-green); color: var(--white); padding: 12px 20px; border-radius: 10px; margin-top: 35px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
     .section-title .icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
-    .section-title .icon .svg-icon {
-        width: 100%;
-        height: 100%;
-        background-color: var(--white);
-        -webkit-mask-size: contain;
-        mask-size: contain;
-        -webkit-mask-repeat: no-repeat;
-        mask-repeat: no-repeat;
+    .section-title .icon img {
+        width: 100%; height: 100%;
+        filter: brightness(0) invert(1); /* White */
     }
-    .section-title .icon .fa-solid { font-size: 28px; }
+    .section-title .icon .fa-solid {
+        font-size: 28px;
+        color: var(--white); /* Ensure FontAwesome icons in header are white */
+    }
     .section-title .title-text { flex-grow: 1; }
     .section-title .title-text h2 { font-size: 20px; font-weight: 700; margin:0; }
     .section-title .title-text h3 { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400; opacity: 0.9; margin:0; }
@@ -294,8 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: "جراحة-التجميل", doctors: [ { name: "د. اسامه الشحات (استشاري)", en_name: "Dr. Osama Elshahat (Consultant)", schedule: { "الإثنين": "04:30 PM" } } ] },
         { id: "علاج-البواسير-والشرخ-بالليزر", doctors: [ { name: "د. وائل صابر (استشاري)", en_name: "Dr. Wael Saber (Consultant)", schedule: { "الإثنين": "08:30 PM", "الجمعة": "02:30 PM" } } ] },
         { id: "الأسنان", doctors: [ { name: "د. محمود اهاب (اخصائي)", en_name: "Dr. Mahmoud Ehab (Specialist)", schedule: { "السبت": "04:00 PM", "الثلاثاء": "06:00 PM", "الأربعاء": "07:00 PM" } }, { name: "د. زياد اشرف (اخصائي)", en_name: "Dr. Ziad Ashraf (Specialist)", schedule: { "السبت": "07:00 PM", "الإثنين": "02:00 PM", "الجمعة": "02:00 PM" } }, { name: "د. نرمين حاتم (اخصائي)", en_name: "Dr. Nermin Hatem (Specialist)", schedule: { "الإثنين": "03:00 PM", "الثلاثاء": "03:00 PM" } }, { name: "د. ريم السيد (اخصائي)", en_name: "Dr. Reem Elsayed (Specialist)", schedule: { "الأحد": "06:00 PM", "الخميس": "06:30 PM" } }, { name: "د. سلمي هاني (استشاري)", en_name: "Dr. Salma Hany (Consultant)", schedule: { "السبت": "12:00 PM" } }, { name: "د. علي محسن (اخصائي)", en_name: "Dr. Ali Mohsen (Specialist)", schedule: { "الإثنين": "06:00 PM", "الأربعاء": "04:00 PM", "الخميس": "04:00 PM" } } ] },
-        { id: "السمعيات", doctors: [ { name: "د. شيماء قابيل (استشاري)", en_name: "Dr. Shaimaa Qabil (Consultant)", schedule: { "الأربعاء": "06:00 PM" } }, { name: "د. هاني عبدالعزيز (استشاري)", en_name: "Dr. Hany Abdelaziz (Consultant)", schedule: { "الأحد": "12:00 PM" } } ] },
-        { id: "أمراض-الدم", doctors: [ { name: "د. عمرو صدقي (استشاري)", en_name: "Dr. Amr Sedky (Consultant)", schedule: { "الإثنين": "02:00 PM", "الخميس": "04:00 PM" } } ] }
+        { id: "السمعيات", doctors: [ { name: "د. شيماء قابيل (استشاري)", en_name: "Dr. Shaimaa Qabil (Consultant)", schedule: { "الأربعاء": "06:00 PM" } }, { name: "د. هاني عبدالعزيز (استشاري)", en_name: "Dr. Hany Abdelaziz (Consultant)", schedule: { "الأحد": "12:00 PM" } } ] }
     ];
 
     const clinicsDisplayData = [
@@ -348,7 +364,7 @@ document.addEventListener('DOMContentLoaded', function() {
             title.className = 'section-title';
             
             const iconHtml = clinic.isSvg 
-                ? `<div class="svg-icon" style="-webkit-mask-image: url(/icons/${clinic.icon}); mask-image: url(/icons/${clinic.icon});"></div>`
+                ? `<img src="/icons/${clinic.icon}" alt="${clinic.name} icon">`
                 : `<i class="fa-solid ${clinic.icon}"></i>`;
             
             title.innerHTML = `
@@ -492,7 +508,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.recommendations && data.recommendations.length > 0) {
                 displayRecommendations(data.recommendations);
             } else {
-                 displayFallback();
+                displayFallback();
             }
 
         } catch (error) {
@@ -515,12 +531,13 @@ document.addEventListener('DOMContentLoaded', function() {
             card.className = `recommendation-card ${isPrimary ? 'primary-recommendation' : ''}`;
             
             const iconHtml = clinicInfo.isSvg 
-                ? `<div class="svg-icon" style="-webkit-mask-image: url(/icons/${clinicInfo.icon}); mask-image: url(/icons/${clinicInfo.icon});"></div>`
+                ? `<img src="/icons/${clinicInfo.icon}" alt="${clinicInfo.name} icon">`
                 : `<i class="fa-solid ${clinicInfo.icon}"></i>`;
 
+            // JAVASCRIPT MODIFICATION: Added icon-${rec.id} class to the icon div
             card.innerHTML = `
                 <div class="recommendation-header">
-                    <div class="icon">${iconHtml}</div>
+                    <div class="icon icon-${rec.id}">${iconHtml}</div>
                     <h3>${clinicInfo.name}</h3>
                     ${isPrimary ? '<span class="recommendation-badge">الترشيح الأنسب</span>' : '<span class="recommendation-badge" style="background-color: #6c757d;">ترشيح بديل</span>'}
                 </div>
@@ -547,13 +564,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const clinicInfo = clinicMap.get("الباطنة-العامة");
         
         const iconHtml = clinicInfo.isSvg 
-            ? `<div class="svg-icon" style="-webkit-mask-image: url(/icons/${clinicInfo.icon}); mask-image: url(/icons/${clinicInfo.icon});"></div>`
+            ? `<img src="/icons/${clinicInfo.icon}" alt="${clinicInfo.name} icon">`
             : `<i class="fa-solid ${clinicInfo.icon}"></i>`;
         
+        // JAVASCRIPT MODIFICATION: Added icon-الباطنة-العامة class to the icon div
         recommendationResultContainer.innerHTML = `
             <div class="recommendation-card primary-recommendation">
                  <div class="recommendation-header">
-                    <div class="icon">${iconHtml}</div>
+                    <div class="icon icon-الباطنة-العامة">${iconHtml}</div>
                     <h3>الباطنة العامة</h3>
                     <span class="recommendation-badge">الترشيح المبدئي</span>
                 </div>
