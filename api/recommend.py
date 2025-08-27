@@ -3,11 +3,13 @@ import google.generativeai as genai
 from http.server import BaseHTTPRequestHandler
 import json
 
-# قائمة معرفات العيادات التي سيفهمها الذكاء الاصطناعي
+# القائمة الكاملة والمحدثة لمعرفات (IDs) العيادات (27 تخصص)
 CLINICS_LIST = """
-"الباطنة-العامة", "غدد-صماء-وسكر", "جهاز-هضمي-ومناظير", "الجراحة-العامة", "نساء-وتوليد", 
-"أنف-وأذن-وحنجرة", "الصدر", "الجلدية", "العظام", "المخ-والأعصاب-باطنة", "جراحة-المخ-والأعصاب",
-"المسالك-البولية", "الأوعية-الدموية", "الأطفال", "الرمد", "القلب", "الأسنان", "أمراض-الدم"
+"الباطنة-العامة", "غدد-صماء-وسكر", "جهاز-هضمي-ومناظير", "باطنة-وقلب", "الجراحة-العامة",
+"مناعة-وروماتيزم", "نساء-وتوليد", "أنف-وأذن-وحنجرة", "الصدر", "أمراض-الذكورة", "الجلدية",
+"العظام", "المخ-والأعصاب-باطنة", "جراحة-المخ-والأعصاب", "المسالك-البولية", "الأوعية-الدموية",
+"الأطفال", "الرمد", "تغذية-الأطفال", "مناعة-وحساسية-الأطفال", "القلب", "رسم-قلب-بالمجهود-وإيكو",
+"جراحة-التجميل", "علاج-البواسير-والشرخ-بالليزر", "الأسنان", "السمعيات", "أمراض-الدم"
 """
 
 class handler(BaseHTTPRequestHandler):
@@ -24,7 +26,11 @@ class handler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self):
         """Handles pre-flight CORS requests from the browser."""
-        self._send_response(204, {})
+        self.send_response(204)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
 
     def do_POST(self):
         """Handles the main logic of receiving symptoms and returning recommendations."""
@@ -43,7 +49,7 @@ class handler(BaseHTTPRequestHandler):
             api_key = os.environ.get("GEMINI_API_KEY")
             if not api_key:
                 print("CRITICAL ERROR: GEMINI_API_KEY is not set in Vercel environment variables.")
-                self._send_response(500, {"error": "Server is not configured correctly."})
+                self._send_response(500, {"error": "Server configuration error."})
                 return
 
             # 2. إعداد Gemini
