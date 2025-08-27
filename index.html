@@ -93,10 +93,10 @@
     .recommendation-header { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
     .recommendation-header .icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
     .recommendation-header .icon img {
-        width: 48px; height: 48px;
+        width: 100%; height: 100%; /* SVG will fill the container */
         filter: invert(25%) sepia(15%) saturate(2000%) hue-rotate(130deg) brightness(85%) contrast(90%); /* Green */
     }
-    .recommendation-header .icon .fa-solid { font-size: 42px; color: var(--dark-green); }
+    .recommendation-header .icon .fa-solid { font-size: 28px; color: var(--dark-green); }
     .recommendation-header h3 { margin: 0; font-size: 20px; color: var(--text-dark); }
     .recommendation-card.primary-recommendation .recommendation-header .icon { animation: professionalGlow 2s infinite ease-in-out; }
     @keyframes professionalGlow {
@@ -116,10 +116,10 @@
     .section-title { background-color: var(--dark-green); color: var(--white); padding: 12px 20px; border-radius: 10px; margin-top: 35px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
     .section-title .icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
     .section-title .icon img {
-        width: 48px; height: 48px;
+        width: 100%; height: 100%; /* SVG will fill the container */
         filter: brightness(0) invert(1); /* White */
     }
-    .section-title .icon .fa-solid { font-size: 42px; }
+    .section-title .icon .fa-solid { font-size: 28px; }
     .section-title .title-text { flex-grow: 1; }
     .section-title .title-text h2 { font-size: 20px; font-weight: 700; margin:0; }
     .section-title .title-text h3 { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 400; opacity: 0.9; margin:0; }
@@ -150,8 +150,8 @@
     <div class="logo-container"><img src="https://i.ibb.co/jv4t9yMt/LOGO-1.png" alt="Mokattam Specialized Hospital Logo" class="logo-image"></div>
     
     <div class="info-professional">
-        <h1>نتشرف باستقبال حضراتكم</h1>
-        <span class="en-title">We are honored to welcome you</span>
+        <h1>نتشرف باستقبال حضراتكم بالعيادات الخارجية</h1>
+        <span class="en-title">We are honored to welcome you at the Outpatient Clinics</span>
         <div class="info-grid">
             <div class="info-item">
                 <i class="fa-solid fa-phone"></i>
@@ -222,7 +222,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
-    // بيانات العيادات والأطباء الكاملة (النسخة الأصلية والصحيحة)
+    // بيانات العيادات والأطباء الكاملة
     const allClinicsFullData = [
         { id: "الباطنة-العامة", doctors: [ { name: "د. ممدوح القاسم (استشاري)", en_name: "Dr. Mamdouh Elkassem (Consultant)", schedule: { "السبت": "04:30 PM", "الأحد": "02:00 PM", "الإثنين": "07:00 PM", "الثلاثاء": "12:00 PM", "الأربعاء": "07:00 PM", "الخميس": "12:00 PM" } }, { name: "د. نيفين الفولي (استشاري)", en_name: "Dr. Nevine Elfouly (Consultant)", schedule: { "الأحد": "08:00 PM", "الأربعاء": "02:00 PM" } }, { name: "د. سمير كامل (استشاري)", en_name: "Dr. Samir Kamel (Consultant)", schedule: { "السبت": "03:30 PM", "الإثنين": "03:30 PM", "الأربعاء": "03:30 PM" } }, { name: "د. مجدي لبيب (استشاري)", en_name: "Dr. Magdy Labib (Consultant)", schedule: { "السبت": "12:00 PM", "الأحد": "12:00 PM", "الإثنين": "12:00 PM", "الثلاثاء": "05:00 PM", "الخميس": "05:00 PM" } }, { name: "د. ولاء الباز (استشاري)", en_name: "Dr. Walaa Elbaz (Consultant)", schedule: { "السبت": "08:00 PM", "الثلاثاء": "08:00 PM", "الخميس": "02:00 PM" } }, { name: "د. عمرو صدقي (استشاري)", en_name: "Dr. Amr Sedky (Consultant)", schedule: { "الإثنين": "02:00 PM", "الخميس": "04:00 PM" } }, { name: "د. مروه محمد (استشاري)", en_name: "Dr. Marwa Mohamed (Consultant)", schedule: { "الخميس": "08:00 PM" } }, { name: "د. سالي سالم (اخصائي)", en_name: "Dr. Sally Salem (Specialist)", schedule: { "الأحد": "08:00 PM", "الإثنين": "05:00 PM" } }, { name: "د. يوسف نصار (استشاري)", en_name: "Dr. Youssef Nassar (Consultant)", schedule: { "الإثنين": "01:00 PM" } }, { name: "د. حاتم عبد العزيز (استشاري)", en_name: "Dr. Hatem Abdelaziz (Consultant)", schedule: { "الأحد": "03:00 PM", "الإثنين": "04:30 PM", "الأربعاء": "05:00 PM", "الخميس": "07:30 PM", "الجمعة": "03:00 PM" } } ] },
         { id: "غدد-صماء-وسكر", doctors: [ { name: "د. يوسف نصار (استشاري)", en_name: "Dr. Youssef Nassar (Consultant)", schedule: { "الإثنين": "01:00 PM" } }, { name: "د. سالي سالم (اخصائي)", en_name: "Dr. Sally Salem (Specialist)", schedule: { "السبت": "08:00 PM", "الإثنين": "05:00 PM" } }, { name: "د. احمد فياض (استشاري)", en_name: "Dr. Ahmed Fayad (Consultant)", schedule: { "الأحد": "06:00 PM", "الأربعاء": "06:00 PM" } } ] },
@@ -249,7 +249,8 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: "جراحة-التجميل", doctors: [ { name: "د. اسامه الشحات (استشاري)", en_name: "Dr. Osama Elshahat (Consultant)", schedule: { "الإثنين": "04:30 PM" } } ] },
         { id: "علاج-البواسير-والشرخ-بالليزر", doctors: [ { name: "د. وائل صابر (استشاري)", en_name: "Dr. Wael Saber (Consultant)", schedule: { "الإثنين": "08:30 PM", "الجمعة": "02:30 PM" } } ] },
         { id: "الأسنان", doctors: [ { name: "د. محمود اهاب (اخصائي)", en_name: "Dr. Mahmoud Ehab (Specialist)", schedule: { "السبت": "04:00 PM", "الثلاثاء": "06:00 PM", "الأربعاء": "07:00 PM" } }, { name: "د. زياد اشرف (اخصائي)", en_name: "Dr. Ziad Ashraf (Specialist)", schedule: { "السبت": "07:00 PM", "الإثنين": "02:00 PM", "الجمعة": "02:00 PM" } }, { name: "د. نرمين حاتم (اخصائي)", en_name: "Dr. Nermin Hatem (Specialist)", schedule: { "الإثنين": "03:00 PM", "الثلاثاء": "03:00 PM" } }, { name: "د. ريم السيد (اخصائي)", en_name: "Dr. Reem Elsayed (Specialist)", schedule: { "الأحد": "06:00 PM", "الخميس": "06:30 PM" } }, { name: "د. سلمي هاني (استشاري)", en_name: "Dr. Salma Hany (Consultant)", schedule: { "السبت": "12:00 PM" } }, { name: "د. علي محسن (اخصائي)", en_name: "Dr. Ali Mohsen (Specialist)", schedule: { "الإثنين": "06:00 PM", "الأربعاء": "04:00 PM", "الخميس": "04:00 PM" } } ] },
-        { id: "السمعيات", doctors: [ { name: "د. شيماء قابيل (استشاري)", en_name: "Dr. Shaimaa Qabil (Consultant)", schedule: { "الأربعاء": "06:00 PM" } }, { name: "د. هاني عبدالعزيز (استشاري)", en_name: "Dr. Hany Abdelaziz (Consultant)", schedule: { "الأحد": "12:00 PM" } } ] }
+        { id: "السمعيات", doctors: [ { name: "د. شيماء قابيل (استشاري)", en_name: "Dr. Shaimaa Qabil (Consultant)", schedule: { "الأربعاء": "06:00 PM" } }, { name: "د. هاني عبدالعزيز (استشاري)", en_name: "Dr. Hany Abdelaziz (Consultant)", schedule: { "الأحد": "12:00 PM" } } ] },
+        { id: "أمراض-الدم", doctors: [ { name: "د. عمرو صدقي (استشاري)", en_name: "Dr. Amr Sedky (Consultant)", schedule: { "الإثنين": "02:00 PM", "الخميس": "04:00 PM" } } ] }
     ];
 
     const clinicsDisplayData = [
@@ -293,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderClinics(data) {
         clinicsContainer.innerHTML = '';
         data.forEach(clinic => {
-            if (!clinic.doctors || clinic.doctors.length === 0) return; // Don't render clinics with no doctors
+            if (!clinic.doctors || clinic.doctors.length === 0) return;
             
             const section = document.createElement('div');
             section.className = 'clinic-section';
