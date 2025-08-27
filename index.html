@@ -91,18 +91,58 @@
     .recommendation-card { background-color: var(--white); border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 15px; text-align: right; transition: all 0.3s ease; }
     .recommendation-card.primary-recommendation { border: 2px solid var(--dark-green); box-shadow: 0 0 20px var(--primary-glow); }
     .recommendation-header { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
-    .recommendation-header .icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
-    .recommendation-header .icon img {
-        width: 100%; height: 100%;
-        filter: invert(25%) sepia(15%) saturate(2000%) hue-rotate(130deg) brightness(85%) contrast(90%); /* Green */
+    .recommendation-header .icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative; /* For sheen effect */
+        overflow: hidden; /* For sheen effect */
     }
-    .recommendation-header .icon .fa-solid { font-size: 28px; color: var(--dark-green); }
+    .recommendation-header .icon .svg-icon,
+    .recommendation-header .icon .fa-solid {
+        animation: none; /* Reset animation for all */
+    }
+    .recommendation-card.primary-recommendation .recommendation-header .icon .svg-icon,
+    .recommendation-card.primary-recommendation .recommendation-header .icon .fa-solid {
+        animation: pulse 1.5s infinite ease-in-out;
+    }
+    .recommendation-card.primary-recommendation .recommendation-header .icon::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -60%;
+        width: 20%;
+        height: 200%;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
+        transform: rotate(35deg);
+        animation: sheen 3s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+    }
+    @keyframes sheen {
+        0% { left: -60%; }
+        100% { left: 140%; }
+    }
+
+    .recommendation-header .icon .svg-icon {
+        width: 100%;
+        height: 100%;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        background-color: var(--dark-green); /* Default to green */
+    }
+    .recommendation-header .icon .fa-solid {
+        font-size: 28px;
+        color: var(--dark-green);
+    }
     .recommendation-header h3 { margin: 0; font-size: 20px; color: var(--text-dark); }
-    .recommendation-card.primary-recommendation .recommendation-header .icon { animation: professionalGlow 2s infinite ease-in-out; }
-    @keyframes professionalGlow {
-        0%, 100% { transform: scale(1); filter: invert(25%) sepia(15%) saturate(2000%) hue-rotate(130deg) brightness(85%) contrast(90%); } /* Green */
-        50% { transform: scale(1.1); filter: invert(80%) sepia(40%) saturate(1500%) hue-rotate(350deg) brightness(100%) contrast(90%); } /* Gold */
-    }
     .recommendation-badge { background-color: var(--dark-green); color: white; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 12px; margin-right: auto; }
     .recommendation-reason { font-size: 15px; line-height: 1.8; color: var(--text-muted); margin-bottom: 15px; text-align: justify; }
     
@@ -115,9 +155,14 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .section-title { background-color: var(--dark-green); color: var(--white); padding: 12px 20px; border-radius: 10px; margin-top: 35px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
     .section-title .icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
-    .section-title .icon img {
-        width: 100%; height: 100%;
-        filter: brightness(0) invert(1); /* White */
+    .section-title .icon .svg-icon {
+        width: 100%;
+        height: 100%;
+        background-color: var(--white);
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
     }
     .section-title .icon .fa-solid { font-size: 28px; }
     .section-title .title-text { flex-grow: 1; }
@@ -249,7 +294,8 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: "جراحة-التجميل", doctors: [ { name: "د. اسامه الشحات (استشاري)", en_name: "Dr. Osama Elshahat (Consultant)", schedule: { "الإثنين": "04:30 PM" } } ] },
         { id: "علاج-البواسير-والشرخ-بالليزر", doctors: [ { name: "د. وائل صابر (استشاري)", en_name: "Dr. Wael Saber (Consultant)", schedule: { "الإثنين": "08:30 PM", "الجمعة": "02:30 PM" } } ] },
         { id: "الأسنان", doctors: [ { name: "د. محمود اهاب (اخصائي)", en_name: "Dr. Mahmoud Ehab (Specialist)", schedule: { "السبت": "04:00 PM", "الثلاثاء": "06:00 PM", "الأربعاء": "07:00 PM" } }, { name: "د. زياد اشرف (اخصائي)", en_name: "Dr. Ziad Ashraf (Specialist)", schedule: { "السبت": "07:00 PM", "الإثنين": "02:00 PM", "الجمعة": "02:00 PM" } }, { name: "د. نرمين حاتم (اخصائي)", en_name: "Dr. Nermin Hatem (Specialist)", schedule: { "الإثنين": "03:00 PM", "الثلاثاء": "03:00 PM" } }, { name: "د. ريم السيد (اخصائي)", en_name: "Dr. Reem Elsayed (Specialist)", schedule: { "الأحد": "06:00 PM", "الخميس": "06:30 PM" } }, { name: "د. سلمي هاني (استشاري)", en_name: "Dr. Salma Hany (Consultant)", schedule: { "السبت": "12:00 PM" } }, { name: "د. علي محسن (اخصائي)", en_name: "Dr. Ali Mohsen (Specialist)", schedule: { "الإثنين": "06:00 PM", "الأربعاء": "04:00 PM", "الخميس": "04:00 PM" } } ] },
-        { id: "السمعيات", doctors: [ { name: "د. شيماء قابيل (استشاري)", en_name: "Dr. Shaimaa Qabil (Consultant)", schedule: { "الأربعاء": "06:00 PM" } }, { name: "د. هاني عبدالعزيز (استشاري)", en_name: "Dr. Hany Abdelaziz (Consultant)", schedule: { "الأحد": "12:00 PM" } } ] }
+        { id: "السمعيات", doctors: [ { name: "د. شيماء قابيل (استشاري)", en_name: "Dr. Shaimaa Qabil (Consultant)", schedule: { "الأربعاء": "06:00 PM" } }, { name: "د. هاني عبدالعزيز (استشاري)", en_name: "Dr. Hany Abdelaziz (Consultant)", schedule: { "الأحد": "12:00 PM" } } ] },
+        { id: "أمراض-الدم", doctors: [ { name: "د. عمرو صدقي (استشاري)", en_name: "Dr. Amr Sedky (Consultant)", schedule: { "الإثنين": "02:00 PM", "الخميس": "04:00 PM" } } ] }
     ];
 
     const clinicsDisplayData = [
@@ -302,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
             title.className = 'section-title';
             
             const iconHtml = clinic.isSvg 
-                ? `<img src="/icons/${clinic.icon}" alt="${clinic.name} icon">`
+                ? `<div class="svg-icon" style="-webkit-mask-image: url(/icons/${clinic.icon}); mask-image: url(/icons/${clinic.icon});"></div>`
                 : `<i class="fa-solid ${clinic.icon}"></i>`;
             
             title.innerHTML = `
@@ -469,7 +515,7 @@ document.addEventListener('DOMContentLoaded', function() {
             card.className = `recommendation-card ${isPrimary ? 'primary-recommendation' : ''}`;
             
             const iconHtml = clinicInfo.isSvg 
-                ? `<img src="/icons/${clinicInfo.icon}" alt="${clinicInfo.name} icon">`
+                ? `<div class="svg-icon" style="-webkit-mask-image: url(/icons/${clinicInfo.icon}); mask-image: url(/icons/${clinicInfo.icon});"></div>`
                 : `<i class="fa-solid ${clinicInfo.icon}"></i>`;
 
             card.innerHTML = `
@@ -501,7 +547,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const clinicInfo = clinicMap.get("الباطنة-العامة");
         
         const iconHtml = clinicInfo.isSvg 
-            ? `<img src="/icons/${clinicInfo.icon}" alt="${clinicInfo.name} icon">`
+            ? `<div class="svg-icon" style="-webkit-mask-image: url(/icons/${clinicInfo.icon}); mask-image: url(/icons/${clinicInfo.icon});"></div>`
             : `<i class="fa-solid ${clinicInfo.icon}"></i>`;
         
         recommendationResultContainer.innerHTML = `
