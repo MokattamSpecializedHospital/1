@@ -45,25 +45,19 @@ class handler(BaseHTTPRequestHandler):
                 self._send_response(400, {"error": "Missing symptoms in request"})
                 return
             
-            # 1. التحقق من وجود مفتاح الواجهة البرمجية بأمان
             api_key = os.environ.get("GEMINI_API_KEY")
             if not api_key:
                 print("CRITICAL ERROR: GEMINI_API_KEY is not set in Vercel environment variables.")
                 self._send_response(500, {"error": "Server configuration error."})
                 return
 
-            # 2. إعداد Gemini
             genai.configure(api_key=api_key)
             model = genai.GenerativeModel('gemini-1.5-flash')
 
-            # 3. صياغة التعليمات الاحترافية (Prompt) للذكاء الاصطناعي
             prompt = f"""
             أنت مساعد طبي خبير ومحترف في مستشفى كبير. مهمتك هي تحليل شكوى المريض بدقة واقتراح أفضل عيادتين بحد أقصى من قائمة العيادات المتاحة.
-
             قائمة معرفات (IDs) العيادات المتاحة هي: [{CLINICS_LIST}]
-
             شكوى المريض: "{symptoms}"
-
             المطلوب منك:
             1.  حدد العيادة الأساسية الأكثر احتمالاً بناءً على الأعراض الرئيسية في الشكوى.
             2.  اشرح للمريض بلغة عربية بسيطة ومباشرة **لماذا** قمت بترشيح هذه العيادة (مثال: "بناءً على ذكرك لألم الصدر، فإن عيادة القلب هي الأنسب...").
@@ -86,16 +80,13 @@ class handler(BaseHTTPRequestHandler):
             إذا كانت هناك توصية واحدة فقط، أعد القائمة بعنصر واحد. إذا كانت الشكوى غير طبية تماماً، أعد قائمة فارغة.
             """
             
-            # 4. إرسال الطلب إلى Gemini واستقبال الرد
             response = model.generate_content(prompt)
             
-            # 5. تنظيف الرد والتأكد من أنه JSON صالح
             cleaned_text = response.text.strip().replace("```json", "").replace("```", "")
             try:
                 json_response = json.loads(cleaned_text)
             except json.JSONDecodeError:
                 print(f"WARNING: Gemini returned a non-JSON response: {cleaned_text}")
-                # إذا فشل الرد، سنرسل رداً افتراضياً آمناً
                 json_response = {"recommendations": []}
 
             self._send_response(200, json_response)
